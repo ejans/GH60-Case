@@ -1,16 +1,23 @@
 use <MCAD/boxes.scad>
 use <../snappy-reprap/joiners.scad>
 
-//$fa = .01;
-//$fs = .01;
-$fa = .1;
-$fs = .1;
+$fa = 1;
+$fs = 1;
+//$fa = .1;
+//$fs = .1;
 
-width_ext = 105;
-depth_ext = 295;
+ori_width_ext = 105;
+ori_depth_ext = 295;
+ori_width_int = 95;
+ori_depth_int = 285;
+
+tol = 0;
+
+width_ext = 105 + tol;
+depth_ext = 295 + tol;
 height_ext = 15.6;
-width_int = 95;
-depth_int = 285;
+width_int = 95 + tol;
+depth_int = 285 + tol;
 height_int = 10.6;
 fillet1=5;
 fillet2=3;
@@ -24,21 +31,26 @@ sstud_width = 3;
 sstud2_width = 2;
 
 round_stud_r = 3;
-hole_r = 1;
+hole_r = .8;
 
-//case_joiners_left();
-//translate([0, -15, 0])case_joiners_right();
+case_joiners_left();
+translate([0, -15, 0])case_joiners_right();
 //joiner_pair(spacing=50, h=10, w=5, l=20, a=30);
-//half_joiner(h=15, w=5, l=5, a=30);
+//half_joiner(h=10, w=5, l=3, a=30);
+//half_joiner2(h=10, w=5, l=3, a=30);
 //!case_left();
 //!case_right();
 //case_joiners_left();
-case_joiners_right();
+//case_joiners_right();
+//case();
+//joiner(h=width_ext/2, w=5, l=10, a=30);
 module case_joiners_left() {
     difference() {
         case_left();
         width = width_ext;
-        translate([-width/2,0,-7.8])cube([width, 5, 5]);
+        translate([-width/2,0,-7.8])cube([width, 10, 5]);
+        translate([(width/2) -5,0,-5])cube([10, 5, 20]);
+        translate([-((width/2) +5),0,-5])cube([10, 5, 20]);
     }
     translate([(width_ext/4), 0, -5.3])
     rotate([0,90,180])
@@ -47,12 +59,22 @@ module case_joiners_left() {
     translate([-(width_ext/4), 0, -5.3])
     rotate([0,90,180])
     joiner(h=width_ext/2, w=5, l=10, a=30);
+    
+    translate([-((width_ext/2)-2.5), 0, 2.5])
+    rotate([0, 0, 180])
+    half_joiner2(h=height_int, w=5, l=5, a=30);
+    
+    translate([+((width_ext/2)-2.5), 0, 2.5])
+    rotate([0, 0, 180])
+    half_joiner(h=height_int, w=5, l=5, a=30);
 }
 module case_joiners_right() {
     difference() {
         case_right();
         width = width_ext;
-        translate([-width/2,-5,-7.8])cube([width, 5, 5]);
+        translate([-width/2,-10,-7.8])cube([width, 10, 5]);
+        translate([(width/2) -5,-5,-5])cube([10, 5, 20]);
+        translate([-(width/2) -5,-5,-5])cube([10, 5, 20]);
     }
     translate([(width_ext/4), 0, -5.3])
     rotate([180,90,180])
@@ -61,6 +83,14 @@ module case_joiners_right() {
     translate([-(width_ext/4), 0, -5.3])
     rotate([180,90,180])
     joiner(h=width_ext/2, w=5, l=10, a=30);
+    
+    translate([-((width_ext/2)-2.5), 0, 2.5])
+    rotate([0, 0, 0])
+    half_joiner(h=height_int, w=5, l=5, a=30);
+    
+    translate([+((width_ext/2)-2.5), 0, 2.5])
+    rotate([0, 0, 0])
+    half_joiner2(h=height_int, w=5, l=5, a=30);
 }
 module case_left() {
     difference() {
@@ -92,31 +122,32 @@ module case() {
 module bak_complete() {
     difference() {
         bak();
-        translate([(width_int/2) + ((width_ext - width_int)/2),(depth_int/2)-18.2,0])
+        translate([(ori_width_int/2) + ((ori_width_ext - ori_width_int)/2),(ori_depth_int/2)-18.2,0])
         cube([(width_ext-width_int), 9, 6], center=true);
-        translate([-0.7, (depth_int/2) - 29.15, -5])
+        translate([-0.7, (ori_depth_int/2) - 29.15, -5])
         cylinder(h=10, r=2, center=true);
     }
 }
 module bak() {
     difference() {
-        translate([0, 0, -height_ext/2])
-        roundedRect([width_ext, depth_ext, height_ext], fillet1, center=true);
+        //translate([0, 0, -height_ext/2])
+        //roundedRect([width_ext, depth_ext, height_ext], fillet1, center=true);
+        cube([width_ext, depth_ext, height_ext], center=true);
         translate([0, 0, (height_ext - height_int)/2])
         cube([width_int, depth_int, height_int], center=true);
     }
 }
 module studs() {
     
-    translate([-9, (stud_b/2)-depth_int/2, -1])
+    translate([-9, (stud_b/2)-ori_depth_int/2, -1])
     rotate([0,0,90])
     stud(stud_b, stud_r, stud_h);
     
-    translate([-9, -((stud_b/2)-depth_int/2), -1])
+    translate([-9, -((stud_b/2)-ori_depth_int/2), -1])
     rotate([0,0,-90])
     stud(stud_b, stud_r, stud_h);
     
-    translate([-((width_int/2) - (stud_b_wide/2)), -48, -1])
+    translate([-((ori_width_int/2) - (stud_b_wide/2)), -48, -1])
     stud(stud_b_wide, stud_r, stud_h);
 }
 
@@ -133,44 +164,37 @@ module circlestuds() {
 }
 
 module squarestuds() {
-    translate([-((width_int/2) - (sstud_width/2)), ((depth_int/2) - (64/2)), -1])
-    cube([sstud_width, 64, stud_h], center=true);
+    width_2 = ori_width_int/2;
+    depth_2 = ori_depth_int/2;
     
-    translate([-((width_int/2) - (sstud_width/2)), ((depth_int/2) - (62/2)) - 88, -1])
-    cube([sstud_width, 62, stud_h], center=true);
+    sqstd(64, 0, 0);
+    sqstd(62, 0, -88);
+    sqstd(82, 0, 0, ysign=-1);
+    sqstd2(18, 17.6, -12);
+    sqstd2(26, 17.6, -36);
+    sqstd2(85, 17.6, -90);
+    sqstd2(37, 17.6, 45, ysign=-1);
+    sqstd2(18, 17.6, 17, ysign=-1);
+    sqstd2(233, 17.6 + 19.3, -12);
+    sqstd2(15, 17.6 + 19.3, 15, ysign=-1);
+    sqstd2(265, 17.6 + 19.3 + 19.3, 20, ysign=-1);
+    sqstd2(240, 17.6 + 19.3 + 19.3 + 19.3, 45, ysign=-1);
+    sqstd2(17, 17.6 + 19.3 + 19.3 + 19.3, 10, ysign=-1);
+}
+module sqstd(b, x, y, xsign=+1, ysign=+1) {
+    width_2 = ori_width_int/2;
+    depth_2 = ori_depth_int/2;
     
-    translate([-((width_int/2) - (sstud_width/2)), -((depth_int/2) - (82/2)), -1])
-    cube([sstud_width, 82, stud_h], center=true);
+    translate([xsign * (-(width_2 - (sstud_width/2))) + x, ysign * ((depth_2 - (b/2)) + y), -1])
+    cube([sstud_width, b, stud_h], center=true);
+}
+
+module sqstd2(b, x, y, xsign=1, ysign=1) {
+    width_2 = ori_width_int/2;
+    depth_2 = ori_depth_int/2;
     
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6, ((depth_int/2) - (18/2)) - 12, -1])
-    cube([sstud2_width, 18, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6, ((depth_int/2) - (26/2)) - 36, -1])
-    cube([sstud2_width, 26, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6, ((depth_int/2) - (85/2)) - 90, -1])
-    cube([sstud2_width, 85, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6, -((depth_int/2) - (37/2)) + 45, -1])
-    cube([sstud2_width, 37, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6, -((depth_int/2) - (18/2)) + 17, -1])
-    cube([sstud2_width, 18, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6 + 19.3, ((depth_int/2) - (233/2)) - 12, -1])
-    cube([sstud2_width, 233, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6 + 19.3, -((depth_int/2) - (15/2)) +15, -1])
-    cube([sstud2_width, 15, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6 + 19.3 + 19.3, -((depth_int/2) - (265/2)) +20, -1])
-    cube([sstud2_width, 265, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6 + 19.3 + 19.3 + 19.3, -((depth_int/2) - (240/2)) +45, -1])
-    cube([sstud2_width, 240, stud_h], center=true);
-    
-    translate([-((width_int/2) - (sstud2_width/2)) + 17.6 + 19.3 + 19.3 + 19.3, -((depth_int/2) - (17/2)) + 10, -1])
-    cube([sstud2_width, 17, stud_h], center=true);
+    translate([xsign * (-(width_2 - (sstud2_width/2))) + x, ysign * (depth_2 - (b/2)) + y, -1])
+    cube([sstud2_width, b, stud_h], center=true);
 }
 
 module roundedRect(size, radius) {
