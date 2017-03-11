@@ -33,17 +33,13 @@ sstud2_width = 2;
 round_stud_r = 3;
 hole_r = .8;
 
-case_joiners_left();
-translate([0, -15, 0])case_joiners_right();
-//joiner_pair(spacing=50, h=10, w=5, l=20, a=30);
-//half_joiner(h=10, w=5, l=3, a=30);
-//half_joiner2(h=10, w=5, l=3, a=30);
-//!case_left();
-//!case_right();
-//case_joiners_left();
-//case_joiners_right();
-//case();
-//joiner(h=width_ext/2, w=5, l=10, a=30);
+combo();
+
+module combo() {
+    case_joiners_left();
+    translate([0, -15, 0])
+    case_joiners_right();
+}
 module case_joiners_left() {
     difference() {
         case_left();
@@ -112,7 +108,13 @@ module case_right() {
 }
 module case() {
 
-    bak_complete();
+    difference() {
+        bak_complete();
+        roundening(fillet1, height_ext, (width_ext/2) - fillet1, (depth_ext/2) - fillet1, 0);
+        roundening(fillet1, height_ext, -(width_ext/2) +fillet1, (depth_ext/2) - fillet1, 90);
+        roundening(fillet1, height_ext, (width_ext/2) -fillet1, -(depth_ext/2) + fillet1, -90);
+        roundening(fillet1, height_ext, -(width_ext/2) +fillet1, -(depth_ext/2) + fillet1, -180);
+    }
     studs();
     circlestuds();
     squarestuds();
@@ -237,5 +239,15 @@ module round_stud(r, h) {
     difference() {
         cylinder(h=h, r=r, center=true);
         cylinder(h=h, r=hole_r, center=true);
+    }
+}
+module roundening(r, h, x, y, rot) {
+    
+    translate([x, y, 0])
+    rotate([0, 0, rot])
+    difference() {
+        translate([(r/2)+1, (r/2)+1, 0])
+        cube([r+2, r+2, h], center=true);
+        cylinder(h=h, r=r, center=true);
     }
 }
