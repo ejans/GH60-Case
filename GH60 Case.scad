@@ -11,7 +11,7 @@ ori_depth_ext = 295;
 ori_width_int = 95;
 ori_depth_int = 285;
 
-tol = 0;
+tol = 1.5;
 
 width_ext = 105 + tol;
 depth_ext = 295 + tol;
@@ -123,9 +123,11 @@ module bak_complete() {
     difference() {
         bak();
         translate([(ori_width_int/2) + ((ori_width_ext - ori_width_int)/2),(ori_depth_int/2)-18.2,0])
-        cube([(width_ext-width_int), 9, 6], center=true);
+        //cube([(width_ext-width_int), 9, 6], center=true);
+        cube([(width_ext-width_int + 20), 11, 8], center=true);
         translate([-0.7, (ori_depth_int/2) - 29.15, -5])
         cylinder(h=10, r=2, center=true);
+        holes();
     }
 }
 module bak() {
@@ -161,6 +163,21 @@ module circlestuds() {
     
     translate([0.5, 14.3, -1])
     round_stud(round_stud_r, stud_h);
+}
+module holes() {
+    translate([19.6, -117.55, -1])
+    cylinder(h=50, r=hole_r, center=true);
+    translate([19.6, 117.3, -1])
+    cylinder(h=50, r=hole_r, center=true);
+    translate([0.5, 14.3, -1])
+    cylinder(h=50, r=hole_r, center=true);
+    
+    translate([-9, (stud_b/2)-ori_depth_int/2, -1])
+    cylinder(h=50, r=hole_r, center=true);
+    translate([-9, -((stud_b/2)-ori_depth_int/2), -1])
+    cylinder(h=50, r=hole_r, center=true);
+    translate([-((ori_width_int/2) - (stud_b_wide/2)), -48, -1])
+    cylinder(h=50, r=hole_r, center=true);
 }
 
 module squarestuds() {
