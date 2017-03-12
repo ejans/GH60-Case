@@ -34,12 +34,15 @@ round_stud_r = 3;
 hole_r = .8;
 
 combo();
+//!case_joiners_left();
+//!case_joiners_right();
 
 module combo() {
     case_joiners_left();
     translate([0, -15, 0])
     case_joiners_right();
 }
+
 module case_joiners_left() {
     difference() {
         case_left();
@@ -64,6 +67,7 @@ module case_joiners_left() {
     rotate([0, 0, 180])
     half_joiner(h=height_int, w=5, l=5, a=30);
 }
+
 module case_joiners_right() {
     difference() {
         case_right();
@@ -88,6 +92,7 @@ module case_joiners_right() {
     rotate([0, 0, 0])
     half_joiner2(h=height_int, w=5, l=5, a=30);
 }
+
 module case_left() {
     difference() {
         case();
@@ -98,6 +103,7 @@ module case_left() {
         cube([500, 500, 500]);
     }
 }
+
 module case_right() {
     difference() {
         case();
@@ -106,8 +112,8 @@ module case_right() {
         cube([500, 500, 500]);
     }
 }
-module case() {
 
+module case() {
     difference() {
         bak_complete();
         roundening(fillet1, height_ext, (width_ext/2) - fillet1, (depth_ext/2) - fillet1, 0);
@@ -118,7 +124,6 @@ module case() {
     studs();
     circlestuds();
     squarestuds();
-    
 }
 
 module bak_complete() {
@@ -132,6 +137,7 @@ module bak_complete() {
         holes();
     }
 }
+
 module bak() {
     difference() {
         //translate([0, 0, -height_ext/2])
@@ -141,8 +147,8 @@ module bak() {
         cube([width_int, depth_int, height_int], center=true);
     }
 }
+
 module studs() {
-    
     translate([-9, (stud_b/2)-ori_depth_int/2, -1])
     rotate([0,0,90])
     stud(stud_b, stud_r, stud_h);
@@ -156,7 +162,6 @@ module studs() {
 }
 
 module circlestuds() {
-    
     translate([19.6, -117.55, -1])
     round_stud(round_stud_r, stud_h);
     
@@ -166,6 +171,7 @@ module circlestuds() {
     translate([0.5, 14.3, -1])
     round_stud(round_stud_r, stud_h);
 }
+
 module holes() {
     translate([19.6, -117.55, -1])
     cylinder(h=50, r=hole_r, center=true);
@@ -174,11 +180,11 @@ module holes() {
     translate([0.5, 14.3, -1])
     cylinder(h=50, r=hole_r, center=true);
     
-    translate([-9, (stud_b/2)-ori_depth_int/2, -1])
+    translate([-9, (stud_b)-ori_depth_int/2, -1])
     cylinder(h=50, r=hole_r, center=true);
-    translate([-9, -((stud_b/2)-ori_depth_int/2), -1])
+    translate([-9, -((stud_b)-ori_depth_int/2), -1])
     cylinder(h=50, r=hole_r, center=true);
-    translate([-((ori_width_int/2) - (stud_b_wide/2)), -48, -1])
+    translate([-((ori_width_int/2) - (stud_b_wide)), -48, -1])
     cylinder(h=50, r=hole_r, center=true);
 }
 
@@ -200,6 +206,7 @@ module squarestuds() {
     sqstd2(240, 17.6 + 19.3 + 19.3 + 19.3, 45, ysign=-1);
     sqstd2(17, 17.6 + 19.3 + 19.3 + 19.3, 10, ysign=-1);
 }
+
 module sqstd(b, x, y, xsign=+1, ysign=+1) {
     width_2 = ori_width_int/2;
     depth_2 = ori_depth_int/2;
@@ -237,7 +244,6 @@ module roundedRect(size, radius) {
     }
 }
 
-
 module stud(b, r, h) {
 //    b = 3.8;
 //    r = 3.5;
@@ -252,14 +258,15 @@ module stud(b, r, h) {
 	cylinder(h=h, r=hole_r, center=true);
     }
 }
+
 module round_stud(r, h) {
     difference() {
         cylinder(h=h, r=r, center=true);
         cylinder(h=h, r=hole_r, center=true);
     }
 }
+
 module roundening(r, h, x, y, rot) {
-    
     translate([x, y, 0])
     rotate([0, 0, rot])
     difference() {
